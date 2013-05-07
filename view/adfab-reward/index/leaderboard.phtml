@@ -1,0 +1,156 @@
+<?php $this->plugin('translate')->setTranslatorTextDomain('adfabreward'); ?>
+
+<div id="leaderboard" class="row-fluid">
+
+	<div class="row-fluid">
+		<h1 class="span8">Le classement</h1>
+
+		<?php if($this->zfcUserIdentity()): ?>
+		    <?php $rank =  $this->rankWidget($this->zfcUserIdentity()->getId());?>
+			<div class="current-position span4">
+				<div class="row-fluid">
+					<div class="ribbon span3"></div>
+					<div class="avatar span3">
+						<?php if($this->zfcUserIdentity()->getAvatar()):?>
+							<img src="<?php echo $this->basePath($this->zfcUserIdentity()->getAvatar()) ?>" width="32" height="32" border="0" alt="<?php echo $this->zfcUserIdentity()->getFirstname(); ?> <?php echo $this->zfcUserIdentity()->getLastname(); ?>" />
+						<?php else:?>
+							<?php if($this->zfcUserIdentity()->getTitle() && $this->zfcUserIdentity()->getTitle() == 'M'): ?>
+					        	<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $this->zfcUserIdentity()->getFirstname(); ?> <?php echo $this->zfcUserIdentity()->getLastname(); ?>" width="32" height="32" border="0" />
+					   		<?php else: ?>
+					        	<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $this->zfcUserIdentity()->getFirstname(); ?> <?php echo $this->zfcUserIdentity()->getLastname(); ?>" width="32" height="32" border="0" />
+					   		<?php endif; ?>
+					    <?php endif;?>
+					</div>
+					<div class="span6">
+						<div class="rank"><?php echo $rank['rank'];?><sup><?php echo ($rank['rank'] == 1)? 'er':'ème'; ?></sup></div>
+						<div class="name">
+							<?php if($this->zfcUserIdentity()->getUsername()) :
+								echo $this->zfcUserIdentity()->getUsername();
+							else :
+								echo $this->zfcUserIdentity()->getFirstname().' '.substr($this->zfcUserIdentity()->getLastname(), 0, 1).'.';
+							endif;
+							?>
+						</div>
+						<div class="points"><?php echo number_format($rank['points'], 0, ',', ' ' ); ?> points</div>
+					</div>
+				</div>
+			</div>
+		<?php endif; ?>
+	</div>
+
+	<!-- sort leader board -->
+	<div id="sort-leaderboard" class="row-fluid orange-dot-double">
+		<div class="span3">
+			<div class="btn btn-inverse<?php if($this->period == 'week'):?> active<?php endif;?>">
+				<a href="<?php echo $this->url('reward/leaderboard', array('period'=>'week')); ?>">Cette semaine</a>
+			</div>
+		</div>
+		<div class="span2">
+			<div class="btn btn-inverse<?php if($this->period == 'general'):?> active<?php endif;?>">
+				<a href="<?php echo $this->url('reward/leaderboard', array('period'=>'general')); ?>">Général</a>
+			</div>
+		</div>
+		<div class="span3">
+			<select name="filter-leaderboard" id="filter-leaderboard">
+				<option value="">Sélectionner</option>
+				<option value="<?php echo $this->url('reward/leaderboard',array('period' => $this->period, 'filter' => 'game')) ?>" <?php echo ($this->filter == 'game')? 'selected' : '';?>>Participations</option>
+				<option value="<?php echo $this->url('reward/leaderboard',array('period' => $this->period, 'filter' => 'sponsorship')) ?>" <?php echo ($this->filter == 'sponsorship')? 'selected' : '';?>>Parrainages</option>
+				<option value="<?php echo $this->url('reward/leaderboard',array('period' => $this->period, 'filter' => 'social')) ?>" <?php echo ($this->filter == 'social')? 'selected' : '';?>>Partages</option>
+			</select>
+		</div>
+		<div class="span4 search-leaderboard">
+			<form action="<?php echo $this->url('reward/leaderboard', array('period'=>'general', 'filter' => $this->filter)); ?>" method="GET" class="row-fluid">
+			<div class="span10">
+				<input type="text" name="name" id="" placeholder="Rechercher" value="<?php echo $this->search?>"/>
+			</div>
+			<div class="span2">
+				<input type="submit" class="btn btn-success" value="rechercher" />
+				<img class="btn-glass" src="<?php echo $this->basePath('images/common/btn-glass.png')?>" alt="" width="16" height="17"/>
+			</div>
+			</form>
+		</div>
+	</div>
+	<!--// sort leader board -->
+
+	<!-- list leaderboard -->
+	<div id="list-leaderboard" class="row-fluid">
+
+		<!-- first -->
+		<?php $i=1;foreach($leaderboard as $entry):?>
+		<?php $achievements =  $this->userBadges($entry['id'], true);?>
+		<?php if($i<=25):?>
+		<div id="lead<?php echo $i;?>" class="list-lead rounded row-fluid">
+			<div class="wrap-lead">
+				<div class="span2 ribon">
+					<p class="podium"><?php echo $i?></p>
+				</div>
+				<div class="lead-user span4">
+					<?php if($entry['avatar']): ?>
+						<img src="<?php echo $this->basePath($entry['avatar'])?>" width="35" height="35" border="0" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" />
+					<?php elseif($entry['title'] && $entry['title'] == 'M') : ?>
+						<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+					<?php else : ?>
+						<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+					<?php endif; ?>
+					<p><?php if($entry['username']) : echo $entry['username']; else : echo $entry['firstname'].' '.substr($entry['lastname'], 0, 1).'.'; endif; ?></p>
+				</div>
+				<div class="lead-badge span3">
+					<ul>
+					<?php foreach($achievements as $key => $achievement):?>
+					   <?php $badge = $achievement['badge'];?>
+						<li>
+						    <?php if($badge):?>
+							     <img src="<?php echo $this->basePath('images/badges/'. strtolower($badge->getLevelLabel()) . '-' . strtolower($key) .'.png')?>" alt="<?php echo $achievement['eventsDone'] ?>" height="35" width="35" />
+							<?php else:?>
+                                <img src="<?php echo $this->basePath('images/badges/default.png')?>" alt="<?php echo $achievement['eventsDone'] ?>" height="35" width="35" />
+							<?php endif;?>
+							<p><?php if($achievement['eventsDoneCount'] != 0) : echo $achievement['eventsDoneCount']; endif; ?></p>
+						</li>
+				    <?php endforeach; ?>
+					</ul>
+				</div>
+				<div class="lead-points span3">
+					<p><?php echo number_format($entry['points'], 0, ',', ' ' );?> points</p>
+				</div>
+			</div>
+		</div>
+		<?php else:?>
+		<!-- small -->
+		<?php if($i%3 == 2):?>
+		<div class="row-fluid col-lead">
+		<?php endif;?>
+			<div class="span4">
+				<div class="small-lead wrap-lead rounded row-fluid">
+					<div class="ribon span3">
+						<p><?php echo $i?></p>
+					</div>
+					<div class="span3">
+						<?php if($entry['avatar']): ?>
+							<img src="<?php echo $this->basePath($entry['avatar'])?>" width="35" height="35" border="0" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" />
+						<?php elseif($entry['title'] && $entry['title'] == 'M') : ?>
+							<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+						<?php else : ?>
+							<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+						<?php endif; ?>
+					</div>
+					<p class="span6">
+						<?php
+							if($entry['username']):
+		    					echo $entry['username'];
+							else :
+								echo $entry['firstname'].' '.substr($entry['lastname'], 0, 1).'.';
+							endif;
+						?><br/>
+						<span class="green"><?php echo number_format($entry['points'], 0, ',', ' ' );?> points</span>
+					</p>
+				</div>
+			</div>
+		<?php if(($i+3)%3 == 1 || $i == count($leaderboard)):?>
+		</div>
+		<?php endif;?>
+		<?php endif;?>
+		<?php $i++;endforeach;?>
+	</div>
+	<!-- //list leaderboard -->
+
+</div>

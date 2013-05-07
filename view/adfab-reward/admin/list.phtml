@@ -1,0 +1,39 @@
+<?php
+/*$fm = $this->flashMessenger()->setNamespace('adfabreward')->getMessages();
+if (isset($fm[0]))
+{
+    print '<span class=>' . $fm[0] . '</span>';
+}*/
+?>
+<h1>LISTE DES ACTIONS</h1>
+<table class="table">
+
+    <?php
+    // Table header
+    echo "<tr>\n";
+    foreach($this->actionlistElements as $name => $element) {
+        echo "<th>";
+        echo $this->escapeHtml($name ?: $element);
+        echo "</th>\n";
+    }
+    echo "<th></th>\n";
+    echo "</tr>\n";
+
+    // Users
+    foreach ($this->actions as $action)
+    {
+        echo "<tr>";
+        foreach($this->actionlistElements as $element)
+        {
+            $func = 'get' . ucfirst($element);
+            echo "<td class='row_" . $element . "'>" . $action->$func() . "</td>";
+        }
+        $editLink = $this->url('zfcadmin/adfabrewardadmin/edit', array('actionId' => $action->getId()));
+        $deleteLink = $this->url('zfcadmin/adfabrewardadmin/remove', array('actionId' => $action->getId()));
+        echo "<td><a href='" . $editLink . "'>Edit</a> | <a href='" . $deleteLink . "'>Delete</a></td></tr>";
+    }
+    ?>
+</table>
+<?php echo $this->paginationControl($this->actions, 'Sliding', 'adfab-reward/admin/pagination_actionlist.phtml'); ?>
+
+<p><a class="" href="<?php echo $this->url('zfcadmin/adfabrewardadmin/create');?>">Add new action</a></p>
