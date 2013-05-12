@@ -1,12 +1,13 @@
 {
-    "name": "adfab/adfab-reward",
+    "name": "adfab/reward",
     "description": "Module managing rewards features",
     "type": "library",
     "license": "BSD-3-Clause",
     "keywords": [
         "zf2",
         "playground",
-        "adfab-reward"
+        "adfab",
+        "reward"
     ],
     "homepage": "https://github.com/gregorybesson/AdfabReward",
     "authors": [
