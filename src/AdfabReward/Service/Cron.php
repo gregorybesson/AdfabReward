@@ -5,7 +5,7 @@ namespace AdfabReward\Service;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 use ZfcBase\EventManager\EventProvider;
-use AdfabGame\Options\ModuleOptions;
+use AdfabReward\Options\ModuleOptions;
 
 class Cron extends EventProvider implements ServiceManagerAwareInterface
 {
