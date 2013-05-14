@@ -19,7 +19,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         'ACTION_USER_REGISTER'      => array('id'=>1,  'points'=>200, 'category' => 'user',       'label'=>'création de compte'),
         'ACTION_USER_OPTIN'         => array('id'=>2,  'points'=>150, 'category' => 'newsletter', 'label'=>'newsletter'),
         'ACTION_USER_OPTINPARTNER'  => array('id'=>3,  'points'=>150, 'category' => 'newsletter', 'label'=>'newsletter partenaires'),
-        'ACTION_USER_USERNAME'      => array('id'=>4,  'points'=>150, 'category' => 'user',       'label'=>'pseudo'),
+        'ACTION_USER_USERNAME'      => array('id'=>4,  'points'=>100, 'category' => 'user',       'label'=>'pseudo'),
         'ACTION_USER_AVATAR'        => array('id'=>5,  'points'=>150, 'category' => 'user',       'label'=>'avatar'),
         'ACTION_USER_ADDRESS'       => array('id'=>6,  'points'=>150, 'category' => 'user',       'label'=>'adresse'),
         'ACTION_USER_CITY'          => array('id'=>7,  'points'=>75,  'category' => 'user',       'label'=>'ville'),
@@ -641,7 +641,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $event->setLabel($label);
         $eventService->getEventMapper()->insert($event);
 
-        $this->sendBadgeMail($sm, $user, $label, 'bronze', 'bronze');
+        $this->sendBadgeMail($sm, $user, $label, 'bronze');
     }
 
     public function badgeSilverAfter($sm, $user, $label)
@@ -656,7 +656,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $event->setLabel($label);
         $eventService->getEventMapper()->insert($event);
 
-        $this->sendBadgeMail($sm, $user, $label, 'argent', 'silver');
+        $this->sendBadgeMail($sm, $user, $label, 'silver');
     }
 
     public function badgeGoldAfter($sm, $user, $label)
@@ -671,7 +671,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $event->setLabel($label);
         $eventService->getEventMapper()->insert($event);
 
-        $this->sendBadgeMail($sm, $user, $label, 'or', 'gold');
+        $this->sendBadgeMail($sm, $user, $label, 'gold');
     }
 
     public function badgeAmbassador($sm, $user)
@@ -722,7 +722,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         }
     }
 
-    public function sendBadgeMail($sm, $user, $label, $levelfr, $level)
+    public function sendBadgeMail($sm, $user, $label, $level)
     {
         $renderer 	 = $sm->get('Zend\View\Renderer\RendererInterface');
         $skinUrl 	 = $renderer->url('home', array(), array('force_canonical' => true));
@@ -748,12 +748,12 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
             case 'Le parrain':
                 $badge = 'brain';
                 break;
-            case 'L\'ambassadeur':
+            case "L\'ambassadeur":
                 $badge = 'ambassador';
                 break;
         }
 
-        $message = $mailService->createHtmlMessage($from, $to, $subject, 'adfab-reward/frontend/email/win_badge', array('score' => $userScore, 'badge' => $badge, 'level' => $level, 'levelfr' => $levelfr ,'skinUrl' => $skinUrl));
+        $message = $mailService->createHtmlMessage($from, $to, $subject, 'adfab-reward/frontend/email/win_badge', array('score' => $userScore, 'badge' => $badge, 'level' => $level, 'skinUrl' => $skinUrl, 'label' => $label));
         $mailService->send($message);
     }
 }
