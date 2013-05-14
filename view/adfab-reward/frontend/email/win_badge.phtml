@@ -1,3 +1,5 @@
+<?php $this->plugin('translate')->setTranslatorTextDomain('adfabreward');// Pour le texte ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -46,7 +48,7 @@
 																							</td>
 																							<td height="297" width="275" valign="top">
 																								<font face="Arial" color="#FFFFFF" style="font-size:18px;background-color:#8DC63F;padding-left:5px;padding-top:5px;padding-bottom:5px;padding-right:5px;line-height:50px;">Bonjour <?php echo $this->zfcUserIdentity()->getFirstname(); ?>,</font><br/>
-																								<font face="Arial" color="#A1A1A1" style="font-size:24px;">Vous avez obtenu le badge <b><?php echo $this->label; ?></b> en version <?php echo $this->levelfr ;?> !</font><br/>
+																								<font face="Arial" color="#A1A1A1" style="font-size:24px;">Vous avez obtenu le badge <b><?php echo $this->label; ?></b> en version <?php if($this->level == 'bronze') : echo $this->translate('bronze'); elseif($this->level == 'silver') : echo $this->translate('silver'); else : echo $this->translate('gold'); endif; ?>!</font><br/>
 																								<a href="<?php echo $this->skinUrl.'mon-compte/mes-badges';?>" style="color:#017F40;"><font face="Arial" color="#017F40" style="font-size:14px;line-height:50px;">&gt; Voir tous les badges</font></a><br/>
 																								<font face="Arial" color="#565656" style="font-size:14px;line-height:50px;"><b>Vous avez <?php echo $this->score; ?> points</b></font><br/>
 																								<a href="<?php echo $this->skinUrl.'comment-ca-marche';?>" style="color:#017F40;"><font face="Arial" color="#017F40" style="font-size:14px;">&gt; Voir comment gagner plus de points</font></a><br/>
