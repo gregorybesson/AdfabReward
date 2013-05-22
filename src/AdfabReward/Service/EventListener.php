@@ -496,7 +496,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $eventService->getEventMapper()->insert($event);
 
         // badge ambassador
-        $this->badgeAmbassador($sm, $user->getId());
+        $this->badgeAmbassador($sm, $user);
 
     }
 
