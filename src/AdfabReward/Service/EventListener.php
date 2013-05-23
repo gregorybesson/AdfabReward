@@ -753,7 +753,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
                 break;
         }
 
-        $message = $mailService->createHtmlMessage($from, $to, $subject, 'adfab-reward/frontend/email/win_badge', array('score' => $userScore, 'badge' => $badge, 'level' => $level, 'skinUrl' => $skinUrl, 'label' => $label));
+        $message = $mailService->createHtmlMessage($from, $to, $subject, 'adfab-reward/frontend/email/win_badge', array('score' => $userScore, 'badge' => $badge, 'level' => $level, 'skinUrl' => $skinUrl, 'label' => $label, 'user' => $user));
         $mailService->send($message);
     }
 }
