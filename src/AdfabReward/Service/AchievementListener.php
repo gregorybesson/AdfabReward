@@ -41,8 +41,8 @@ class AchievementListener extends EventProvider implements ListenerAggregateInte
         ),
         'GOLDFATHER'      => array(
             'event' => 'sponsorship',
-            'unit'  => 'ami parrainé',
-            'units' => 'amis parrainés',
+            'unit'  => 'filleul',
+            'units' => 'filleuls',
             'levels'=> array(
                 1 => array(
                     'label' => 'Bronze',
