@@ -26,7 +26,7 @@ class Event
     protected $actionId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AdfabUser\Entity\UserInterface")
+     * @ORM\ManyToOne(targetEntity="AdfabUser\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", onDelete="CASCADE")
      **/
     protected $user;
