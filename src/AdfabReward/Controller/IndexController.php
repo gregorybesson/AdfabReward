@@ -31,7 +31,7 @@ class IndexController extends AbstractActionController
     {
         $filter = $this->getEvent()->getRouteMatch()->getParam('filter');
         $period = $this->getEvent()->getRouteMatch()->getParam('period');
-        $search = $this->params()->fromQuery('name');
+        $search = '';
         if ($period=='week') {
             $leaderboard = $this->getLeaderboardService()->getLeaderboard($filter, 'week', $search, 49);
         } else {

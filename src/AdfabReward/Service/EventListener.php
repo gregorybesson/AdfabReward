@@ -40,9 +40,20 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         'ACTION_BADGE_SILVER'       => array('id'=>101,'points'=>500, 'category' => 'badge',      'label'=>'badge argent'),
         'ACTION_BADGE_GOLD'         => array('id'=>102,'points'=>750, 'category' => 'badge',      'label'=>'badge or'),
     );
+    
+    protected static $populated = false;
 
-    public static function getActions()
+    public static function getActions(\AdfabReward\Service\Action $actionService)
     {
+        if ( ! self::$populated ) {
+            foreach( $actionService->getActionMapper()->findAll() as $action ) {
+                foreach( self::$actions as $key => $a ) {
+                    if ( $a['id'] == $action->getId() ) {
+                        self::$actions[$key]['action'] = $action; 
+                    }
+                }
+            }
+        }
         return self::$actions;
     }
 
@@ -172,11 +183,12 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     {
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $eventService = $sm->get('adfabreward_event_service');
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_USER_REGISTER']['id']);
+        $event->setAction($actions['ACTION_USER_REGISTER']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_USER_REGISTER']['points']);
         $event->setLabel($actions['ACTION_USER_REGISTER']['label']);
@@ -192,7 +204,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
             //Is this key is valid, I record a sponsorship event for the original user.
             if ($socialEvent) {
                 $event = new \AdfabReward\Entity\Event();
-                $event->setActionId($actions['ACTION_SOCIAL_SPONSORSHIP']['id']);
+                $event->setAction($actions['ACTION_SOCIAL_SPONSORSHIP']['action']);
                 $event->setUser($socialEvent->getUser());
                 $event->setPoints($actions['ACTION_SOCIAL_SPONSORSHIP']['points']);
                 $event->setLabel($user->getEmail());
@@ -201,7 +213,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
                 // badge player
                 $level = 0;
 
-                $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions['ACTION_SOCIAL_SPONSORSHIP']['id'],'user' => $socialEvent->getUser()));
+                $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions['ACTION_SOCIAL_SPONSORSHIP']['action'],'user' => $socialEvent->getUser()));
 
                 if (count($existingEvents) == 1) {
                     $level = 1;
@@ -276,17 +288,18 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     {
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         if (count($this->eventsArray) > 0) {
             // On compte les events
             $eventService = $sm->get('adfabreward_event_service');
 
             foreach ($this->eventsArray as $attribute => $value) {
-                $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions[$value]['id'],'user' => $user));
+                $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions[$value]['action'],'user' => $user));
                 if (count($existingEvents) == 0) {
                     $event = new \AdfabReward\Entity\Event();
-                    $event->setActionId($actions[$value]['id']);
+                    $event->setAction($actions[$value]['id']);
                     $event->setUser($user);
                     $event->setPoints($actions[$value]['points']);
                     $event->setLabel($actions[$value]['label']);
@@ -347,7 +360,8 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     {
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         if (count($this->eventsArray) > 0) {
             // On compte les events
@@ -357,10 +371,10 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
           //  die();
 
         foreach ($this->eventsArray as $attribute => $value) {
-                $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions[$value]['id'],'user' => $user));
+                $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions[$value]['action'],'user' => $user));
                 if (count($existingEvents) == 0) {
                     $event = new \AdfabReward\Entity\Event();
-                    $event->setActionId($actions[$value]['id']);
+                    $event->setAction($actions[$value]['action']);
                     $event->setUser($user);
                     $event->setPoints($actions[$value]['points']);
                     $event->setLabel($actions[$value]['label']);
@@ -376,12 +390,13 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
-        $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions['ACTION_USER_PRIZECATEGORY']['id'],'user' => $user));
+        $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions['ACTION_USER_PRIZECATEGORY']['action'],'user' => $user));
         if (count($existingEvents) == 0) {
             $event = new \AdfabReward\Entity\Event();
-            $event->setActionId($actions['ACTION_USER_PRIZECATEGORY']['id']);
+            $event->setAction($actions['ACTION_USER_PRIZECATEGORY']['action']);
             $event->setUser($user);
             $event->setPoints($actions['ACTION_USER_PRIZECATEGORY']['points']);
             $event->setLabel($actions['ACTION_USER_PRIZECATEGORY']['label']);
@@ -401,10 +416,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
         $achievementService = $sm->get('adfabreward_achievement_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_GAME_SUBSCRIBE']['id']);
+        $event->setAction($actions['ACTION_GAME_SUBSCRIBE']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_GAME_SUBSCRIBE']['points']);
         $event->setLabel($game->getTitle());
@@ -415,7 +431,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         // badge player
         $level = 0;
 
-        $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions['ACTION_GAME_SUBSCRIBE']['id'],'user' => $user));
+        $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions['ACTION_GAME_SUBSCRIBE']['action'],'user' => $user));
 
         if (count($existingEvents) == 1) {
             $level = 1;
@@ -463,10 +479,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_SOCIAL_SHAREMAIL']['id']);
+        $event->setAction($actions['ACTION_SOCIAL_SHAREMAIL']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_SOCIAL_SHAREMAIL']['points']);
         $event->setLabel($topic);
@@ -488,7 +505,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $actions = self::$actions;
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_SOCIAL_FBWALL']['id']);
+        $event->setAction($actions['ACTION_SOCIAL_FBWALL']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_SOCIAL_FBWALL']['points']);
         $event->setLabel($topic);
@@ -508,10 +525,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_SOCIAL_TWITTER']['id']);
+        $event->setAction($actions['ACTION_SOCIAL_TWITTER']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_SOCIAL_TWITTER']['points']);
         $event->setLabel($topic);
@@ -530,10 +548,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_SOCIAL_GOOGLE']['id']);
+        $event->setAction($actions['ACTION_SOCIAL_GOOGLE']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_SOCIAL_GOOGLE']['points']);
         $event->setLabel($topic);
@@ -553,10 +572,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_SOCIAL_FBFRIEND']['id']);
+        $event->setAction($actions['ACTION_SOCIAL_FBFRIEND']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_SOCIAL_FBFRIEND']['points']);
         $event->setLabel($game->getTitle());
@@ -577,17 +597,18 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
         $achievementService = $sm->get('adfabreward_achievement_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         // badge brain
         $level = 0;
 
-        $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions['ACTION_QUIZ_CORRECTANSWERS']['id'],'user' => $user));
+        $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions['ACTION_QUIZ_CORRECTANSWERS']['action'],'user' => $user));
 
         // je crée autant d'events que de bonnes réponses
         for ($i=1;$i<=$data;$i++) {
             $event = new \AdfabReward\Entity\Event();
-            $event->setActionId($actions['ACTION_QUIZ_CORRECTANSWERS']['id']);
+            $event->setAction($actions['ACTION_QUIZ_CORRECTANSWERS']['action']);
             $event->setUser($user);
             $event->setPoints($actions['ACTION_QUIZ_CORRECTANSWERS']['points']);
             $event->setLabel($game->getTitle());
@@ -632,10 +653,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function badgeBronzeAfter($sm, $user, $label)
     {
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_BADGE_BRONZE']['id']);
+        $event->setAction($actions['ACTION_BADGE_BRONZE']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_BADGE_BRONZE']['points']);
         $event->setLabel($label);
@@ -647,10 +669,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function badgeSilverAfter($sm, $user, $label)
     {
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_BADGE_SILVER']['id']);
+        $event->setAction($actions['ACTION_BADGE_SILVER']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_BADGE_SILVER']['points']);
         $event->setLabel($label);
@@ -662,10 +685,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function badgeGoldAfter($sm, $user, $label)
     {
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->getActionService();
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
-        $event->setActionId($actions['ACTION_BADGE_GOLD']['id']);
+        $event->setAction($actions['ACTION_BADGE_GOLD']['action']);
         $event->setUser($user);
         $event->setPoints($actions['ACTION_BADGE_GOLD']['points']);
         $event->setLabel($label);

@@ -70,6 +70,12 @@ class Action
      * @ORM\Column(type="boolean")
      */
     protected $team_credit;
+    
+    /**
+    * @ORM\ManyToMany(targetEntity="AdfabReward\Entity\LeaderboardType", inversedBy="actions")
+    * @ORM\JoinTable(name="reward_action_leaderboard_type")
+    */
+    protected $leaderboard_types;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -80,6 +86,13 @@ class Action
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $updated_at;
+    
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->leaderboard_types = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /** @PrePersist */
     public function createChrono()

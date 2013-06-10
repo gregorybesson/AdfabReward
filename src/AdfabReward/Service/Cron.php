@@ -52,13 +52,15 @@ class Cron extends EventProvider implements ServiceManagerAwareInterface
      */
     public function anniversary()
     {
-        $em = $this->getServiceManager()->get('adfabreward_doctrine_em');
+        $sm = $this->getServiceManager()
+        $em = $sm->get('adfabreward_doctrine_em');
+        $actionService = $sm->getActionService();
 
         $now = new \DateTime('now');
         $month = $now->format('m');
         $day = $now->format('d');
 
-        $actions = \AdfabReward\Service\EventListener::getActions();
+        $actions = \AdfabReward\Service\EventListener::getActions($actionService);
 
         // I Have to know what is the User Class used
         $zfcUserOptions = $this->getServiceManager()->get('zfcuser_module_options');
@@ -83,19 +85,20 @@ class Cron extends EventProvider implements ServiceManagerAwareInterface
                 $existingAchievements = $this->getAchievementMapper()->findOneBy(array('type' => 'badge', 'category' => 'anniversary', 'level' => $i, 'user' => $user));
 
                 if (count($existingAchievements) == 0) {
-                    if ($i == 1) {
-                        $level = 1;
-                        $levelLabel = 'BRONZE';
-                    }
 
-                    if ($i == 2) {
-                        $level = 2;
-                        $levelLabel = 'SILVER';
-                    }
-
-                    if ($i >= 3) {
-                        $level = $i;
-                        $levelLabel = 'GOLD';
+                    switch ( $i ) {
+                        case 1:
+                            $level = 1;
+                            $levelLabel = 'BRONZE';
+                            break;
+                        case 2:
+                            $level = 2;
+                            $levelLabel = 'SILVER';
+                            break;
+                        case 3:
+                            $level = $i;
+                            $levelLabel = 'GOLD';
+                            break;
                     }
 
                     $achievement = new \AdfabReward\Entity\Achievement();
@@ -110,15 +113,9 @@ class Cron extends EventProvider implements ServiceManagerAwareInterface
                     $event = new \AdfabReward\Entity\Event();
                     $event->setUser($user);
                     $event->setLabel('Badge Anniversaire');
-                    if ($i == 1) {
-                        $event->setActionId($actions['ACTION_BADGE_BRONZE']['id']);
-                        $event->setPoints($actions['ACTION_BADGE_BRONZE']['points']);
-                    } elseif ($i == 2) {
-                        $event->setActionId($actions['ACTION_BADGE_SILVER']['id']);
-                        $event->setPoints($actions['ACTION_BADGE_SILVER']['points']);
-                    } elseif ($i >= 3) {
-                        $event->setActionId($actions['ACTION_BADGE_GOLD']['id']);
-                        $event->setPoints($actions['ACTION_BADGE_GOLD']['points']);
+                    if ( isset($levelLabel) ) {
+                        $event->setAction($actions['ACTION_BADGE_'.$levelLabel]['action']);
+                        $event->setPoints($actions['ACTION_BADGE_'.$levelLabel]['points']);
                     }
                     $this->getEventMapper()->insert($event);
 
@@ -126,7 +123,7 @@ class Cron extends EventProvider implements ServiceManagerAwareInterface
                     $event = new \AdfabReward\Entity\Event();
                     $event->setUser($user);
                     $event->setLabel('Bonus Anniversaire');
-                    $event->setActionId($actions['ACTION_USER_ANNIVERSARY']['id']);
+                    $event->setAction($actions['ACTION_USER_ANNIVERSARY']['action']);
                     $event->setPoints($actions['ACTION_USER_ANNIVERSARY']['points']);
                     $this->getEventMapper()->insert($event);
                 }
