@@ -28,47 +28,37 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
     public function getRank($userId, $timeScale='')
     {
         $em = $this->getServiceManager()->get('adfabreward_doctrine_em');
-        $dateLimit = '';
-
-        if (strtolower($timeScale) == 'week') {
-            $now = new \DateTime("now");
-            $interval = 'P7D';
-            $now->sub(new \DateInterval($interval));
-            $dateLimit = " WHERE (re.created_at >= '" . $now->format('Y-m-d') . " 0:0:0'  OR isnull(re.created_at)) ";
-        }
-
+        
+        $prefix = $timeScale == 'week' ? 'week' : 'total'; 
+        
         $rsm = new \Doctrine\ORM\Query\ResultSetMapping;
         $rsm->addScalarResult('points', 'points');
         $rsm->addScalarResult('rank', 'rank');
-
-        // I use MySql user variable to determine the rank of the user in the leaderboard.
+        
         $em->getConnection()->exec('SET @rank=0');
-
+        
         $query = $em->createNativeQuery('
-            SELECT @rank:=@rank+1 AS rank, IF(isnull(points),0, points) AS points
-            FROM (SELECT
-                sum(points) as points, user.user_id, re.created_at
-                FROM
-                user
-                LEFT JOIN reward_event AS re ON re.user_id=user.user_id'
-                . $dateLimit . '
-                GROUP BY user.user_id
-                ORDER BY points DESC
-            ) t
-            GROUP BY user_id
-            HAVING user_id= ?
+            SELECT
+                @rank:=@rank+1 AS rank,
+                rl.'.$prefix.'_points as points,
+                rl.user_id
+            FROM reward_leaderboard AS rl
+            WHERE rl.leaderboardtype_id = 1
+            HAVING rl.user_id = ?
+            ORDER BY rl.'.$prefix.'_points DESC
         ', $rsm);
+        
         $query->setParameter(1, $userId);
-
+        
         $result = $query->getResult();
-
+        
         if (count($result) == 1) {
             $rank = $result[0];
-
             return $rank;
         } else {
-            return null;
+            return 0;
         }
+        
     }
 
     /**
@@ -83,65 +73,49 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
         $filterSearch = '';
         $dateLimit = '';
 
-        if (strtolower($timeScale) == 'week') {
-            $now = new \DateTime("now");
-            $interval = 'P7D';
-            $now->sub(new \DateInterval($interval));
-            $dateLimit = " AND e.createdAt >= '" . $now->format('Y-m-d') . " 0:0:0'";
-        }
+        $prefix = $timeScale == 'week' ? 'week' : 'total'; 
 
         if ($search != '') {
-            $filterSearch = " AND (u.username like '%" . $search . "%' OR u.lastname like '%" . $search . "%' OR u.firstname like '%" . $search . "%')";
+            $filterSearch = ' AND (u.username LIKE :queryString OR u.lastname LIKE :queryString OR u.firstname LIKE :queryString)';
         }
-
+        
+        // TODO : automatiser avec l'entité LeaderboardType directement en base
         switch ($type) {
             case 'game':
-                $filter = array(12);
-                break;
-            case 'user':
-                $filter = array(1,4,5,6,7,8,9,10,11);
-                break;
-            case 'newsletter':
-                $filter = array(2,3);
+                $leaderboardTypeId = 2;
                 break;
             case 'sponsorship':
-                $filter = array(20);
+                $leaderboardTypeId = 3;
                 break;
             case 'social':
-                $filter = array(13,14,15,16,17);
-                break;
-            case 'badgesBronze':
-                $filter = array(100);
-                break;
-            case 'badgesSilver':
-                $filter = array(101);
-                break;
-            case 'badgesGold':
-                $filter = array(102);
-                break;
-            case 'anniversary':
-                $filter = array(25);
+                $leaderboardTypeId = 4;
                 break;
             default:
-                $filter = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,100,101,102,103);
+                $leaderboardTypeId = 1;
         }
 
         $query = $em->createQuery('
-            SELECT SUM(e.points) as points, u.username, u.avatar, u.id, u.firstname, u.lastname, u.title, u.state
-            FROM AdfabReward\Entity\Event e
+            SELECT e.'.$prefix.'Points as points, u.username, u.avatar, u.id, u.firstname, u.lastname, u.title, u.state
+            FROM AdfabReward\Entity\Leaderboard e
             JOIN e.user u
-            WHERE e.actionId in (?1)' .
-            $dateLimit .
-            $filterSearch .
-            'AND u.state = 1
-            GROUP BY e.user
-            ORDER BY points DESC
+            WHERE u.state = 1 AND e.leaderboardType = :leaderboardTypeId '.$filterSearch.'
+            ORDER BY e.'.$prefix.'Points DESC
         ');
-        $query->setParameter(1, $filter);
+        $query->setParameter('leaderboardTypeId', $leaderboardTypeId);
+        if ($search != '') {
+            $query->setParameter('queryString', '%'.$search.'%');
+        }
         if ($nbItems>0) {
             $query->setMaxResults($nbItems);
         }
-        $leaderboard = $query->getResult();
+        try {
+            $leaderboard = $query->getResult();
+        }
+        catch( \Doctrine\ORM\Query\QueryException $e ) {
+            echo $e->getMessage();
+            echo $e->getTraceAsString();
+            exit();
+        }
 
         return $leaderboard;
     }

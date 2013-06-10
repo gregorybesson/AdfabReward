@@ -39,6 +39,11 @@ class Action extends EventProvider implements ServiceManagerAwareInterface
 
         return $action;
     }
+    
+    public function findBy($array, $sort=array())
+    {
+        return $this->getActionMapper()->findBy($array, $sort=array());
+    }
 
     /**
      * getActionMapper

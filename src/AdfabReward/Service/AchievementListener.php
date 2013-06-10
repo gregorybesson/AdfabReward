@@ -183,7 +183,8 @@ class AchievementListener extends EventProvider implements ListenerAggregateInte
         $sm = $e->getTarget()->getServiceManager();
         $em = $e->getTarget()->getEventManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = AdfabReward\Service\EventListener::$actions;
+        $actionService = $sm->get('adfabreward_action_service');
+        $actions = AdfabReward\Service\EventListener::getActions($actionService);
         $level = 0;
 
         $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions['ACTION_SOCIAL_SPONSORSHIP']['id'],'userId' => $userId));
@@ -224,7 +225,8 @@ class AchievementListener extends EventProvider implements ListenerAggregateInte
         $sm = $e->getTarget()->getServiceManager();
         $em = $e->getTarget()->getEventManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = AdfabReward\Service\EventListener::$actions;
+        $actionService = $sm->get('adfabreward_action_service');
+        $actions = AdfabReward\Service\EventListener::getActions($actionService);
         $level = 0;
 
         $existingEvents = $eventService->getEventMapper()->findBy(array('actionId' => $actions['ACTION_GAME_SUBSCRIBE']['id'],'userId' => $userId));
@@ -265,7 +267,8 @@ class AchievementListener extends EventProvider implements ListenerAggregateInte
         $sm = $e->getTarget()->getServiceManager();
         $em = $e->getTarget()->getEventManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = AdfabReward\Service\EventListener::$actions;
+        $actionService = $sm->get('adfabreward_action_service');
+        $actions = AdfabReward\Service\EventListener::getActions($actionService);
         $level = 0;
 
         // trouver les events de type share (mail, fb ...)
