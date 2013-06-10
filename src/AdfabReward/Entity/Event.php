@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\PreUpdate;
 
 /**
  * @ORM\Entity @HasLifecycleCallbacks
- * @ORM\Table(name="reward_event")
+ * @ORM\Table(name="reward_event",indexes={@ORM\Index(name="idx_action_id", columns={"action_id"}),@ORM\Index(name="idx_points", columns={"points"})})
  */
 class Event
 {
