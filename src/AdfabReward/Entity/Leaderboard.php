@@ -8,9 +8,11 @@ use Doctrine\ORM\Mapping\PreUpdate;
 
 /**
  * @ORM\Entity @HasLifecycleCallbacks
- * @ORM\Table(name="reward_event",indexes={@ORM\Index(name="idx_action_id", columns={"action_id"}),@ORM\Index(name="idx_points", columns={"points"})})
+ * @ORM\Table(name="reward_leaderboard",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="uniq_user_leaderboard_type", columns={"user_id", "leaderboardtype_id"})},
+ *     indexes={@ORM\Index(name="idx_week_points", columns={"week_points"}),@ORM\Index(name="idx_total_points", columns={"total_points"})})
  */
-class Event
+class Leaderboard
 {
 
     /**
@@ -21,41 +23,29 @@ class Event
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AdfabReward\Entity\Action")
-     * @ORM\JoinColumn(name="action_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    protected $action;
-
-    /**
      * @ORM\ManyToOne(targetEntity="AdfabUser\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", onDelete="CASCADE")
      **/
     protected $user;
 
     /**
-     * Le nombre de points que rapporte cette action
-     * @ORM\Column(type="integer")
-     */
-    protected $points;
+     * @ORM\ManyToOne(targetEntity="AdfabReward\Entity\LeaderboardType")
+     * @ORM\JoinColumn(name="leaderboardtype_id", referencedColumnName="id", onDelete="CASCADE")
+     **/
+    protected $leaderboardType;
 
     /**
-     * Le libellé associé à l'event
-     * @ORM\Column(type="text", nullable=true)
+     * Le nombre de points totaux 
+     * @ORM\Column(name="total_points",type="integer",columnDefinition="TINYINT UNSIGNED NOT NULL DEFAULT 0")
      */
-    protected $label;
+    protected $totalPoints;
 
     /**
-     * La category d'event
-     * @ORM\Column(type="string", nullable=true)
+     * Le nombre de points sur la semaine courante 
+     * @ORM\Column(name="week_points",type="integer",columnDefinition="TINYINT UNSIGNED NOT NULL DEFAULT 0")
      */
-    protected $category;
-
-    /**
-     * Une clé cryptée permettant d'identifier l'event
-     * @ORM\Column(name="secret_key", type="string", length=255, nullable=true)
-     */
-    protected $secretKey;
-
+    protected $weekPoints;
+    
     /**
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
@@ -115,85 +105,53 @@ class Event
     }
 
     /**
-     * @return the $action
+     * @return the $leaderboardType
      */
-    public function getAction()
+    public function getLeaderboardType()
     {
-        return $this->action;
+        return $this->leaderboardType;
     }
 
     /**
-     * @param field_type $action
+     * @param field_type $leaderboardType
      */
-    public function setAction($action)
+    public function setLeaderboardType($leaderboardType)
     {
-        $this->action = $action;
+        $this->leaderboardType = $leaderboardType;
     }
 
     /**
-     * @return the $points
+     * @return the $totalPoints
      */
-    public function getPoints()
+    public function getTotalPoints()
     {
-        return $this->points;
+        return $this->totalPoints;
     }
 
     /**
-     * @param field_type $points
+     * @param field_type $totalPoints
      */
-    public function setPoints($points)
+    public function setTotalPoints($totalPoints)
     {
-        $this->points = $points;
+        $this->totalPoints = $totalPoints;
     }
 
     /**
-     * @return the $label
+     * @return the $weekPoints
      */
-    public function getLabel()
+    public function getWeekPoints()
     {
-        return $this->label;
+        return $this->weekPoints;
     }
 
     /**
-     * @param field_type $label
+     * @param field_type $weekPoints
      */
-    public function setLabel($label)
+    public function setWeekPoints($weekPoints)
     {
-        $this->label = $label;
+        $this->weekPoints = $weekPoints;
     }
-
-    /**
-     * @return the $category
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param field_type $category
-     */
-    public function setCategory($category)
-    {
-        $this->category = $category;
-    }
-
-    /**
-     * @return the $secretKey
-     */
-    public function getSecretKey()
-    {
-        return $this->secretKey;
-    }
-
-    /**
-     * @param field_type $secretKey
-     */
-    public function setSecretKey($secretKey)
-    {
-        $this->secretKey = $secretKey;
-    }
-
+    
     /**
      *
      * @return the $createdAt
@@ -238,20 +196,5 @@ class Event
     public function getArrayCopy()
     {
         return get_object_vars($this);
-    }
-
-    /**
-     * Populate from an array.
-     *
-     * @param array $data
-     */
-    public function populate($data = array())
-    {
-        /*$this->id = $data['id'];
-        $this->username = $data['username'];
-        $this->email = $data['email'];
-        $this->displayName = $data['displayName'];
-        $this->password = $data['password'];
-        $this->state = $data['state'];*/
     }
 }

@@ -51,6 +51,7 @@ class Event extends EventProvider implements ServiceManagerAwareInterface
             $aggregate = 'COUNT(e.id)';
         }
 
+        // TODO : automatiser avec l'entité LeaderboardType directement en base
         switch ($type) {
             case 'game':
                 $filter = array(12);
@@ -86,7 +87,7 @@ class Event extends EventProvider implements ServiceManagerAwareInterface
                 $filter = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,100,101,102,103);
         }
 
-        $query = $em->createQuery('SELECT ' . $aggregate . ' FROM AdfabReward\Entity\Event e WHERE e.user = :user AND e.actionId in (?1)');
+        $query = $em->createQuery('SELECT ' . $aggregate . ' FROM AdfabReward\Entity\Event e WHERE e.user = :user AND e.action IN (?1)');
         $query->setParameter('user', $user);
         $query->setParameter(1, $filter);
         $total = $query->getSingleScalarResult();
