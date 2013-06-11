@@ -73,7 +73,7 @@ class Event extends AbstractDbMapper implements ActionInterface
                 $filter = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,100,101,102);
         }
 
-        $query = $this->em->createQuery('SELECT e FROM AdfabReward\Entity\Event e WHERE e.user = :user AND e.points > 0 and e.actionId in (?1) ORDER BY e.createdAt DESC');
+        $query = $this->em->createQuery('SELECT e FROM AdfabReward\Entity\Event e WHERE e.user = :user AND e.points > 0 and e.action IN (?1) ORDER BY e.createdAt DESC');
         $query->setParameter('user', $user);
         $query->setParameter(1, $filter);
 
