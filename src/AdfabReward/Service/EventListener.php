@@ -183,7 +183,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     {
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $eventService = $sm->get('adfabreward_event_service');
@@ -288,7 +288,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     {
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         if (count($this->eventsArray) > 0) {
@@ -360,7 +360,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     {
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         if (count($this->eventsArray) > 0) {
@@ -390,7 +390,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $user = $e->getParam('user');
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions['ACTION_USER_PRIZECATEGORY']['action'],'user' => $user));
@@ -416,7 +416,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
         $achievementService = $sm->get('adfabreward_achievement_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -479,7 +479,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -525,7 +525,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -548,7 +548,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -572,7 +572,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -597,7 +597,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
         $achievementService = $sm->get('adfabreward_achievement_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         // badge brain
@@ -653,7 +653,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function badgeBronzeAfter($sm, $user, $label)
     {
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -669,7 +669,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function badgeSilverAfter($sm, $user, $label)
     {
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
@@ -685,7 +685,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function badgeGoldAfter($sm, $user, $label)
     {
         $eventService = $sm->get('adfabreward_event_service');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
         $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();

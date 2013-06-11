@@ -54,7 +54,7 @@ class Cron extends EventProvider implements ServiceManagerAwareInterface
     {
         $sm = $this->getServiceManager()
         $em = $sm->get('adfabreward_doctrine_em');
-        $actionService = $sm->getActionService();
+        $actionService = $sm->get('adfabreward_action_service');
 
         $now = new \DateTime('now');
         $month = $now->format('m');
