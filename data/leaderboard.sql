@@ -21,14 +21,3 @@ GROUP BY
 	`re`.`user_id`,
 	`rlat`.`leaderboardtype_id`
 );
-
-/*
-CREATE TRIGGER ON `reward_event_insert` AFTER INSERT ON `reward_event` FOR EACH ROW BEGIN
-
-END;
-
-
-CREATE TRIGGER ON `reward_event_update` AFTER INSERT ON `reward_event` FOR EACH ROW
-	
-;
-*/

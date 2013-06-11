@@ -1,4 +1,4 @@
-INSERT INTO `clubmetro`.`reward_leaderboard_type` (
+INSERT INTO `reward_leaderboard_type` (
 	`id` ,
 	`name` ,
 	`created_at` ,
@@ -14,7 +14,7 @@ VALUES (
 	4, 'Partages', NOW(), NOW() 
 );
 
-INSERT INTO `clubmetro`.`reward_action_leaderboard_type` (
+INSERT INTO `reward_action_leaderboard_type` (
 	`leaderboardtype_id`,
 	`action_id`
 )
