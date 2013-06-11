@@ -35,17 +35,16 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
         $rsm->addScalarResult('points', 'points');
         $rsm->addScalarResult('rank', 'rank');
         
-        $em->getConnection()->exec('SET @rank=0');
-        
         $query = $em->createNativeQuery('
             SELECT
-                @rank:=@rank+1 AS rank,
-                rl.'.$prefix.'_points as points,
-                rl.user_id
-            FROM reward_leaderboard AS rl
-            WHERE rl.leaderboardtype_id = 1
-            HAVING rl.user_id = ?
-            ORDER BY rl.'.$prefix.'_points DESC
+                COUNT(*) + 1 AS rank,
+                rl2.'.$prefix.'_points AS points
+            FROM reward_leaderboard AS rl, reward_leaderboard AS rl2
+            WHERE
+                rl.leaderboardtype_id = 1 AND
+                rl2.leaderboardtype_id = 1 AND
+                rl2.user_id = ? AND
+                rl.'.$prefix.'_points > rl2.'.$prefix.'_points
         ', $rsm);
         
         $query->setParameter(1, $userId);
@@ -56,7 +55,7 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
             $rank = $result[0];
             return $rank;
         } else {
-            return 0;
+            return array('rank'=>0,'result'=>0);
         }
         
     }

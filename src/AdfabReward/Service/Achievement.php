@@ -45,10 +45,9 @@ class Achievement extends EventProvider implements ServiceManagerAwareInterface
      */
     public function getLastBadgesActivity( $number=5 )
     {
-        return array();
         $em = $this->getServiceManager()->get('adfabreward_doctrine_em');
 
-        $query = $em->createQuery('SELECT a, u FROM AdfabReward\Entity\Achievement a JOIN a.user u ORDER BY a.updatedAt DESC');
+        $query = $em->createQuery('SELECT a FROM AdfabReward\Entity\Achievement a ORDER BY a.id DESC');
         $query->setMaxResults($number);
         $lastBadges = $query->getResult();
 

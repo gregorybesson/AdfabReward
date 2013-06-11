@@ -36,13 +36,13 @@ class Leaderboard
 
     /**
      * Le nombre de points totaux 
-     * @ORM\Column(name="total_points",type="integer",columnDefinition="TINYINT UNSIGNED NOT NULL DEFAULT 0")
+     * @ORM\Column(name="total_points",type="integer",columnDefinition="MEDIUMINT UNSIGNED NOT NULL DEFAULT 0")
      */
     protected $totalPoints;
 
     /**
      * Le nombre de points sur la semaine courante 
-     * @ORM\Column(name="week_points",type="integer",columnDefinition="TINYINT UNSIGNED NOT NULL DEFAULT 0")
+     * @ORM\Column(name="week_points",type="integer",columnDefinition="MEDIUMINT UNSIGNED NOT NULL DEFAULT 0")
      */
     protected $weekPoints;
     
