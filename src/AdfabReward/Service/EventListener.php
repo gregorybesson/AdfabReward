@@ -433,17 +433,17 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions['ACTION_GAME_SUBSCRIBE']['action'],'user' => $user));
 
-        if (count($existingEvents) == 1) {
+        if (count($existingEvents) == 10) {
             $level = 1;
             $levelLabel = 'BRONZE';
         }
 
-        if (count($existingEvents) == 2) {
+        if (count($existingEvents) == 50) {
             $level = 2;
             $levelLabel = 'SILVER';
         }
 
-        if (count($existingEvents) == 3) {
+        if (count($existingEvents) == 100) {
             $level = 3;
             $levelLabel = 'GOLD';
         }
@@ -618,11 +618,11 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
                 $level = 1;
                 $levelLabel = 'BRONZE';
             }
-            if (count($existingEvents)+$i == 50) {
+            if (count($existingEvents)+$i == 150) {
                 $level = 2;
                 $levelLabel = 'SILVER';
             }
-            if (count($existingEvents)+$i == 100) {
+            if (count($existingEvents)+$i == 250) {
                 $level = 3;
                 $levelLabel = 'GOLD';
             }
