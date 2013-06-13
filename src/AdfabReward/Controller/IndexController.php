@@ -4,6 +4,9 @@ namespace AdfabReward\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Paginator\Paginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
+use AdfabCore\ORM\Pagination\LargeTablePaginator as ORMPaginator;
 
 class IndexController extends AbstractActionController
 {
@@ -32,12 +35,13 @@ class IndexController extends AbstractActionController
         $filter = $this->getEvent()->getRouteMatch()->getParam('filter');
         $period = $this->getEvent()->getRouteMatch()->getParam('period');
         $search = $this->params()->fromQuery('name');
-        if ($period=='week') {
-            $leaderboard = $this->getLeaderboardService()->getLeaderboard($filter, 'week', $search, 49);
-        } else {
-            $leaderboard = $this->getLeaderboardService()->getLeaderboard($filter, '', $search, 49);
-        }
-
+		
+		$leaderboard = $this->getLeaderboardService()->getLeaderboardQuery($filter, ($period=='week')?'week':'', $search);
+		
+        $paginator = new Paginator(new DoctrineAdapter(new ORMPaginator($leaderboard)));
+        $paginator->setItemCountPerPage(100);
+        $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('p'));
+		
         $viewModel = new ViewModel();
 
         return new ViewModel(
@@ -45,7 +49,7 @@ class IndexController extends AbstractActionController
                 'search' => $search,
                 'period' => $period,
                 'filter' => $filter,
-                'leaderboard' => $leaderboard
+                'leaderboard' => $paginator
             )
         );
     }
