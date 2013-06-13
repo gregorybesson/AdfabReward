@@ -1,5 +1,11 @@
 <?php $this->plugin('translate')->setTranslatorTextDomain('adfabreward'); ?>
 
+<?php
+	$currentPageItems = $this->leaderboard->getCurrentPageNumber() * 100;
+	$result = $currentPageItems - $this->leaderboard->getTotalItemCount();
+	$lastPageItems = 100 - $result;
+?>
+
 <div id="leaderboard" class="row-fluid">
 
 	<div class="row-fluid">
@@ -76,81 +82,90 @@
 	<div id="list-leaderboard" class="row-fluid">
 
 		<!-- first -->
-		<?php $i=1;foreach($leaderboard as $entry):?>
-		<?php $achievements =  $this->userBadges($entry['id'], true);?>
-		<?php if($i<=25):?>
-		<div id="lead<?php echo $i;?>" class="list-lead rounded row-fluid">
-			<div class="wrap-lead">
-				<div class="span2 ribon">
-					<p class="podium"><?php echo $i?></p>
-				</div>
-				<div class="lead-user span4">
-					<?php if($entry['avatar']): ?>
-						<img src="<?php echo $this->basePath($entry['avatar'])?>" width="35" height="35" border="0" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" />
-					<?php elseif($entry['title'] && $entry['title'] == 'M') : ?>
-						<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
-					<?php else : ?>
-						<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
-					<?php endif; ?>
-					<p><?php if($entry['username']) : echo $entry['username']; else : echo $entry['firstname'].' '.substr($entry['lastname'], 0, 1).'.'; endif; ?></p>
-				</div>
-				<div class="lead-badge span3">
-					<ul>
-					<?php foreach($achievements as $key => $achievement):?>
-					   <?php $badge = $achievement['badge'];?>
-						<li>
-						    <?php if($badge):?>
-							     <img src="<?php echo $this->basePath('images/badges/'. strtolower($badge->getLevelLabel()) . '-' . strtolower($key) .'.png')?>" alt="<?php echo $achievement['eventsDone'] ?>" height="35" width="35" />
-							<?php else:?>
-                                <img src="<?php echo $this->basePath('images/badges/default.png')?>" alt="<?php echo $achievement['eventsDone'] ?>" height="35" width="35" />
-							<?php endif;?>
-							<p><?php if($achievement['eventsDoneCount'] != 0) : echo $achievement['eventsDoneCount']; endif; ?></p>
-						</li>
-				    <?php endforeach; ?>
-					</ul>
-				</div>
-				<div class="lead-points span3">
-					<p><?php echo number_format($entry['points'], 0, ',', ' ' );?> points</p>
-				</div>
-			</div>
-		</div>
-		<?php else:?>
-		<!-- small -->
-		<?php if($i%3 == 2):?>
-		<div class="row-fluid col-lead">
-		<?php endif;?>
-			<div class="span4">
-				<div class="small-lead wrap-lead rounded row-fluid">
-					<div class="ribon span3">
-						<p><?php echo $i?></p>
-					</div>
-					<div class="span3">
-						<?php if($entry['avatar']): ?>
-							<img src="<?php echo $this->basePath($entry['avatar'])?>" width="35" height="35" border="0" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" />
-						<?php elseif($entry['title'] && $entry['title'] == 'M') : ?>
-							<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
-						<?php else : ?>
-							<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+		<?php $i=1;foreach($this->leaderboard as $entry):?>
+			
+			<?php $achievements =  $this->userBadges($entry['id'], true);?>
+				
+			<?php if($i<=25 && $this->leaderboard->getCurrentPageNumber() <= 1):?>
+				
+				<div id="lead<?php echo $i;?>" class="list-lead rounded row-fluid">
+					<div class="wrap-lead">
+						<div class="span2 ribon">
+							<p class="podium"><?php echo $i + $this->leaderboard->getItemCountPerPage() * ( $this->leaderboard->getCurrentPageNumber() - 1 ) ?></p>
+						</div>
+						<div class="lead-user span4">
+							<?php if($entry['avatar']): ?>
+								<img src="<?php echo $this->basePath($entry['avatar'])?>" width="35" height="35" border="0" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" />
+							<?php elseif($entry['title'] && $entry['title'] == 'M') : ?>
+								<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+							<?php else : ?>
+								<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+							<?php endif; ?>
+							<p><?php if($entry['username']) : echo substr($entry['username'], 0, 15); else : echo substr($entry['firstname'].' '.substr($entry['lastname'], 0, 1), 0, 15).'.'; endif; ?></p>
+						</div>
+						<div class="lead-badge span3">
+							<ul>
+							<?php foreach($achievements as $key => $achievement):?>
+							   <?php $badge = $achievement['badge'];?>
+								<li>
+								    <?php if($badge):?>
+									     <img src="<?php echo $this->basePath('images/badges/'. strtolower($badge->getLevelLabel()) . '-' . strtolower($key) .'.png')?>" alt="<?php echo $achievement['eventsDone'] ?>" height="35" width="35" />
+									<?php else:?>
+		                                <img src="<?php echo $this->basePath('images/badges/default.png')?>" alt="<?php echo $achievement['eventsDone'] ?>" height="35" width="35" />
+									<?php endif;?>
+									<p><?php if($achievement['eventsDoneCount'] != 0) : echo $achievement['eventsDoneCount']; endif; ?></p>
+								</li>
+						    <?php endforeach; ?>
+							</ul>
+						</div>
+						<?php if($this->filter != 'social') : ?>
+						<div class="lead-points span3">
+							<p><?php echo number_format($entry['points'], 0, ',', ' ' ); ?> points</p>
+						</div>
 						<?php endif; ?>
 					</div>
-					<p class="span6">
-						<?php
-							if($entry['username']):
-		    					echo $entry['username'];
-							else :
-								echo $entry['firstname'].' '.substr($entry['lastname'], 0, 1).'.';
-							endif;
-						?><br/>
-						<span class="green"><?php echo number_format($entry['points'], 0, ',', ' ' );?> points</span>
-					</p>
 				</div>
-			</div>
-		<?php if(($i+3)%3 == 1 || $i == count($leaderboard)):?>
-		</div>
-		<?php endif;?>
-		<?php endif;?>
+				
+			<?php else:?>
+				
+				<!-- small -->
+				<?php if(($i == 26 && $this->leaderboard->getCurrentPageNumber() <= 1) || ($i == 1 && $this->leaderboard->getCurrentPageNumber() > 1)):?>
+				<div class="col-lead">
+				<?php endif ?>
+					<div class="small-lead wrap-lead rounded">
+						<div class="ribon span3">
+							<p><span><?php echo $i + $this->leaderboard->getItemCountPerPage() * ( $this->leaderboard->getCurrentPageNumber() - 1 )?></span></p>
+						</div>
+						<div class="span3">
+							<?php if($entry['avatar']): ?>
+								<img src="<?php echo $this->basePath($entry['avatar'])?>" width="35" height="35" border="0" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" />
+							<?php elseif($entry['title'] && $entry['title'] == 'M') : ?>
+								<img src="<?php echo $this->basePath('images/user/no-avatar-small-h.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+							<?php else : ?>
+								<img src="<?php echo $this->basePath('images/user/no-avatar-small-f.png'); ?>" alt="<?php echo $entry['firstname']; ?> <?php echo $entry['lastname']; ?>" width="35" height="35" border="0" />
+							<?php endif; ?>
+						</div>
+						<p class="span6">
+							<?php
+								if($entry['username']):
+			    					echo substr($entry['username'], 0, 15);
+								else :
+									echo substr($entry['firstname'].' '.substr($entry['lastname'], 0, 1), 0, 15).'.';
+								endif;
+							?><br/>
+							<span class="green"><?php echo number_format($entry['points'], 0, ',', ' ' );?> points</span>
+						</p>
+					</div>
+				<?php if($i == $this->leaderboard->getItemCountPerPage() || ($i == $lastPageItems)) : ?>
+				</div>
+				<?php endif ?>
+				
+			<?php endif;?>
+		
 		<?php $i++;endforeach;?>
 	</div>
 	<!-- //list leaderboard -->
 
 </div>
+
+<?php echo $this->paginationControl($this->leaderboard, 'Sliding', 'adfab-reward/index/pagination.phtml', array('url' => 'reward/leaderboard', 'period'=> $this->period, 'filter' => $this->filter)); ?>
