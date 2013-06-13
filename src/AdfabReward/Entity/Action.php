@@ -19,19 +19,19 @@ class Action
 
     /**
      * Le sujet à l'origine de l'action (le module responsable)
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $subject;
 
     /**
      * L'action à accomplir
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $verb;
 
     /**
      * Ce sur quoi l'action est réalisée
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $complement;
 
@@ -70,7 +70,7 @@ class Action
      * @ORM\Column(type="boolean")
      */
     protected $team_credit;
-    
+
     /**
     * @ORM\ManyToMany(targetEntity="AdfabReward\Entity\LeaderboardType", inversedBy="actions")
     * @ORM\JoinTable(name="reward_action_leaderboard_type")
@@ -86,7 +86,7 @@ class Action
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $updated_at;
-    
+
     /**
      * Constructor
      */
