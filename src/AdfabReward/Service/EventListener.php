@@ -299,7 +299,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
                 $existingEvents = $eventService->getEventMapper()->findBy(array('action' => $actions[$value]['action'],'user' => $user));
                 if (count($existingEvents) == 0) {
                     $event = new \AdfabReward\Entity\Event();
-                    $event->setAction($actions[$value]['id']);
+                    $event->setAction($actions[$value]['action']);
                     $event->setUser($user);
                     $event->setPoints($actions[$value]['points']);
                     $event->setLabel($actions[$value]['label']);
