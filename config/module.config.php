@@ -18,7 +18,7 @@ return array(
     ),
 
 	'data-fixture' => array(
-		'location' => __DIR__ . '/../src/AdfabReward/DataFixtures/ORM',
+		'AdfabReward_fixture' => __DIR__ . '/../src/AdfabReward/DataFixtures/ORM',
 	),
 
     'view_manager' => array(
