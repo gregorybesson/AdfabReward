@@ -66,7 +66,7 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
      * @param unknown_type $type
      * @param unknown_type $count
      */
-    public function getLeaderboard( $type='', $timeScale='', $search='', $nbItems = 5)
+    public function getLeaderboardQuery( $type='', $timeScale='', $search='')
     {
         $em = $this->getServiceManager()->get('adfabreward_doctrine_em');
         $filterSearch = '';
@@ -75,7 +75,7 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
         $prefix = $timeScale == 'week' ? 'week' : 'total'; 
 
         if ($search != '') {
-            $filterSearch = ' AND (u.username LIKE :queryString OR u.lastname LIKE :queryString OR u.firstname LIKE :queryString)';
+            $filterSearch = ' AND (u.username LIKE :queryString1 OR u.lastname LIKE :queryString2 OR u.firstname LIKE :queryString3)';
         }
         
         // TODO : automatiser avec l'entité LeaderboardType directement en base
@@ -102,9 +102,23 @@ class Leaderboard extends EventProvider implements ServiceManagerAwareInterface
         ');
         $query->setParameter('leaderboardTypeId', $leaderboardTypeId);
         if ($search != '') {
-            $query->setParameter('queryString', '%'.$search.'%');
+            $query->setParameter('queryString1', '%'.$search.'%');
+            $query->setParameter('queryString2', '%'.$search.'%');
+            $query->setParameter('queryString3', '%'.$search.'%');
         }
-        if ($nbItems>0) {
+        return $query;
+    }
+
+	/**
+     * This function return count of events or total points by event category for one user
+     * @param unknown_type $user
+     * @param unknown_type $type
+     * @param unknown_type $count
+     */
+    public function getLeaderboard( $type='', $timeScale='', $search='', $nbItems = 5)
+    {
+    	$query = $this->getLeaderboardQuery($type='', $timeScale='', $search);
+		if ($nbItems>0) {
             $query->setMaxResults($nbItems);
         }
         try {

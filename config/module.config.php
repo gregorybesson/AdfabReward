@@ -73,26 +73,13 @@ return array(
                     'leaderboard' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => '/leaderboard/:period[/:filter]',
+                            'route' => '/leaderboard/:period[/:filter][/:p]',
                             'constraints' => array(
                                 'filter' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
                                 'controller' => 'adfabreward',
                                 'action'     => 'leaderboard'
-                            ),
-                        ),
-                        'may_terminate' => true,
-                        'child_routes' => array(
-                            'pagination' => array(
-                                'type'    => 'Segment',
-                                'options' => array(
-                                    'route'    => '[/:p]',
-                                    'defaults' => array(
-                                        'controller' => 'adfabreward',
-                                        'action'     => 'leaderboard',
-                                    ),
-                                ),
                             ),
                         ),
                     ),
