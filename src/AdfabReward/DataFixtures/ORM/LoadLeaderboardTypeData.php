@@ -23,26 +23,30 @@ class LoadLeaderboardTypeData extends AbstractFixture implements OrderedFixtureI
      */
     public function load(ObjectManager $manager)
     {
-        $leaderboardType = new LeaderboardType();
-        $leaderboardType->setName('all');
-        $manager->persist($leaderboardType);
+        $lbtAll = new LeaderboardType();
+        $lbtAll->setName('all');
+        $manager->persist($lbtAll);
         $manager->flush();
 
-        $leaderboardType = new LeaderboardType();
-        $leaderboardType->setName('game');
-        $manager->persist($leaderboardType);
+        $lbtGame = new LeaderboardType();
+        $lbtGame->setName('game');
+        $manager->persist($lbtGame);
         $manager->flush();
 
-        $leaderboardType = new LeaderboardType();
-        $leaderboardType->setName('sponsorship');
-        $manager->persist($leaderboardType);
+        $lbtSponsorship = new LeaderboardType();
+        $lbtSponsorship->setName('sponsorship');
+        $manager->persist($lbtSponsorship);
         $manager->flush();
 
-        $leaderboardType = new LeaderboardType();
-        $leaderboardType->setName('share');
-        $manager->persist($leaderboardType);
+        $lbtShare = new LeaderboardType();
+        $lbtShare->setName('share');
+        $manager->persist($lbtShare);
         $manager->flush();
 
+        $this->addReference('lbtAll', $lbtAll);
+        $this->addReference('lbtGame', $lbtGame);
+        $this->addReference('lbtSponsorship', $lbtSponsorship);
+        $this->addReference('lbtShare', $lbtShare);
     }
 
     public function getOrder()

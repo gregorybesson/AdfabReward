@@ -221,6 +221,18 @@ class Action {
 		$this->leaderboard_types = $leaderboard_types;
 		return $this;
 	}
+	
+	/**
+	 * Add a LeaderboardType to the action.
+	 *
+	 * @param Role $role
+	 *
+	 * @return void
+	 */
+	public function addLeaderboardType($leaderboard_type)
+	{
+		$this->leaderboard_types[] = $leaderboard_type;
+	}
 
 	public function getCreatedAt() {
 		return $this->created_at;
