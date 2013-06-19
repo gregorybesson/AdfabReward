@@ -19,18 +19,18 @@ class LeaderboardType
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
+
     /**
-     * Le libellé 
-     * @ORM\Column(name="name",type="integer",length=20)
+     * Le libellé
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     protected $name;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="AdfabReward\Entity\Action", mappedBy="leaderboard_types")
      */
     protected $actions;
-    
+
     /**
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
@@ -40,7 +40,7 @@ class LeaderboardType
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
-    
+
     /**
      * Constructor
      */
@@ -95,7 +95,7 @@ class LeaderboardType
     {
         $this->name = $name;
     }
-    
+
     /**
      *
      * @return the $createdAt
