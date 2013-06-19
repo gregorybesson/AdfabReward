@@ -161,21 +161,14 @@ return array(
 
     'navigation' => array(
         'default' => array(
-            array(
+            'reward' => array(
                 'label' => 'Les récompenses',
                 'route' => 'reward',
             ),
-            array(
+            'leaderboard' => array(
                 'label' => 'Le classement',
-                'route' => 'leaderboard',
-                'controller' => 'adfabreward',
-                'action'     => 'leaderboard',
-            ),
-            array(
-                'label' => 'Le classement',
-                'route' => 'leaderboardgeneral',
-                'controller' => 'adfabreward',
-                'action'     => 'leaderboardgeneral',
+                'route' => 'reward/leaderboard',
+                'action'     => 'leaderboard'
             ),
         ),
         /*'admin' => array(
