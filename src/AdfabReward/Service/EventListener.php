@@ -502,7 +502,8 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
 
         $sm = $e->getTarget()->getServiceManager();
         $eventService = $sm->get('adfabreward_event_service');
-        $actions = self::$actions;
+        $actionService = $sm->get('adfabreward_action_service');
+        $actions = self::getActions($actionService);
 
         $event = new \AdfabReward\Entity\Event();
         $event->setAction($actions['ACTION_SOCIAL_FBWALL']['action']);
