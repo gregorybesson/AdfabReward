@@ -23,7 +23,8 @@ return array(
 
     'view_manager' => array(
         'template_path_stack' => array(
-            'adfabreward' => __DIR__ . '/../view',
+            __DIR__ . '/../view/admin',
+        	__DIR__ . '/../view/frontend',
         ),
     ),
 
