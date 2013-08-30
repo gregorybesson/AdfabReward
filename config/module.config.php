@@ -60,32 +60,36 @@ return array(
 
     'router' => array(
         'routes' => array(
-            'reward' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
-                'options' => array(
-                    'route'    => '/reward',
-                    'defaults' => array(
-                        'controller' => 'adfabreward',
-                        'action'     => 'index',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' =>array(
-                    'leaderboard' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => '/leaderboard/:period[/:filter][/:p]',
-                            'constraints' => array(
-                                'filter' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                                'controller' => 'adfabreward',
-                                'action'     => 'leaderboard'
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+        	'frontend' => array(
+       			'child_routes' => array(
+		            'reward' => array(
+		                'type' => 'Zend\Mvc\Router\Http\Segment',
+		                'options' => array(
+		                    'route'    => 'reward',
+		                    'defaults' => array(
+		                        'controller' => 'adfabreward',
+		                        'action'     => 'index',
+		                    ),
+		                ),
+		                'may_terminate' => true,
+		                'child_routes' =>array(
+		                    'leaderboard' => array(
+		                        'type' => 'segment',
+		                        'options' => array(
+		                            'route' => '/leaderboard/:period[/:filter][/:p]',
+		                            'constraints' => array(
+		                                'filter' => '[a-zA-Z][a-zA-Z0-9_-]*',
+		                            ),
+		                            'defaults' => array(
+		                                'controller' => 'adfabreward',
+		                                'action'     => 'leaderboard'
+		                            ),
+		                        ),
+		                    ),
+		                ),
+		            ),
+       			),
+        	),
             'zfcadmin' => array(
                 'child_routes' => array(
                     'adfabrewardadmin' => array(
