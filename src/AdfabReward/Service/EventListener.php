@@ -750,7 +750,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
     public function sendBadgeMail($sm, $user, $label, $level)
     {
         $renderer 	 = $sm->get('Zend\View\Renderer\RendererInterface');
-        $skinUrl 	 = $renderer->url('home', array(), array('force_canonical' => true));
+        $skinUrl 	 = $renderer->url('frontend', array(), array('force_canonical' => true));
         $config 	 = $sm->get('config');
         $badge 		 = '';
         $userScore   = $sm->get('viewhelpermanager')->get('UserScore');
@@ -778,7 +778,7 @@ class EventListener extends EventProvider implements ListenerAggregateInterface
                 break;
         }
 
-        $message = $mailService->createHtmlMessage($from, $to, $subject, 'adfab-reward/frontend/email/win_badge', array('score' => $userScore, 'badge' => $badge, 'level' => $level, 'skinUrl' => $skinUrl, 'label' => $label, 'user' => $user));
+        $message = $mailService->createHtmlMessage($from, $to, $subject, 'adfab-reward/email/win_badge', array('score' => $userScore, 'badge' => $badge, 'level' => $level, 'skinUrl' => $skinUrl, 'label' => $label, 'user' => $user));
         $mailService->send($message);
     }
 }
