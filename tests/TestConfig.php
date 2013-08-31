@@ -8,7 +8,6 @@ return array(
    		'Jhu\ZdtLoggerModule',
     	'AsseticBundle',
     	'ZfcBase',
-   		'ZfcAdmin',
    		'AdfabCore',
     	'AdfabReward',
         'Application',
