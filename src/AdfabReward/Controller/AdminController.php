@@ -46,7 +46,7 @@ class AdminController extends AbstractActionController
 
         $this->flashMessenger()->setNamespace('adfabreward')->addMessage('The action was created');
 
-        return $this->redirect()->toRoute('zfcadmin/adfabrewardadmin/list');*/
+        return $this->redirect()->toRoute('admin/adfabrewardadmin/list');*/
     }
 
     public function editAction()
@@ -70,7 +70,7 @@ class AdminController extends AbstractActionController
 
         $this->flashMessenger()->setNamespace('adfabreward')->addMessage('The action was edited');
 
-        return $this->redirect()->toRoute('zfcadmin/adfabrewardadmin/list');
+        return $this->redirect()->toRoute('admin/adfabrewardadmin/list');
     }
 
     public function removeAction()
@@ -82,7 +82,7 @@ class AdminController extends AbstractActionController
             $this->flashMessenger()->setNamespace('adfabreward')->addMessage('The action was deleted');
         }
 
-        return $this->redirect()->toRoute('zfcadmin/adfabrewardadmin/list');
+        return $this->redirect()->toRoute('admin/adfabrewardadmin/list');
     }
 
     public function setOptions(ModuleOptions $options)

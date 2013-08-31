@@ -90,7 +90,7 @@ return array(
 		            ),
        			),
         	),
-            'zfcadmin' => array(
+            'admin' => array(
                 'child_routes' => array(
                     'adfabrewardadmin' => array(
                         'type' => 'Literal',
@@ -179,13 +179,13 @@ return array(
         /*'admin' => array(
             'adfabrewardadmin' => array(
                 'label' => 'Actions',
-                'route' => 'zfcadmin/adfabrewardadmin/list',
+                'route' => 'admin/adfabrewardadmin/list',
                 'resource' => 'reward',
                 'privilege' => 'list',
                 'pages' => array(
                     'create' => array(
                         'label' => 'New Action',
-                        'route' => 'zfcadmin/adfabcmsadmin/pages/list',
+                        'route' => 'admin/adfabcmsadmin/pages/list',
                         'resource' => 'reward',
                         'privilege' => 'list',
                     ),

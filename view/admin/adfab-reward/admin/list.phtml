@@ -28,12 +28,12 @@ if (isset($fm[0]))
             $func = 'get' . ucfirst($element);
             echo "<td class='row_" . $element . "'>" . $action->$func() . "</td>";
         }
-        $editLink = $this->url('zfcadmin/adfabrewardadmin/edit', array('actionId' => $action->getId()));
-        $deleteLink = $this->url('zfcadmin/adfabrewardadmin/remove', array('actionId' => $action->getId()));
+        $editLink = $this->url('admin/adfabrewardadmin/edit', array('actionId' => $action->getId()));
+        $deleteLink = $this->url('admin/adfabrewardadmin/remove', array('actionId' => $action->getId()));
         echo "<td><a href='" . $editLink . "'>Edit</a> | <a href='" . $deleteLink . "'>Delete</a></td></tr>";
     }
     ?>
 </table>
 <?php echo $this->paginationControl($this->actions, 'Sliding', 'adfab-reward/admin/pagination_actionlist.phtml'); ?>
 
-<p><a class="" href="<?php echo $this->url('zfcadmin/adfabrewardadmin/create');?>">Add new action</a></p>
+<p><a class="" href="<?php echo $this->url('admin/adfabrewardadmin/create');?>">Add new action</a></p>
